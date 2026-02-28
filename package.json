@@ -13,7 +13,8 @@
     "lint": "oxlint . && prettier --check \"**/*.svelte\"",
     "format": "oxfmt --write . && prettier --write \"**/*.svelte\"",
     "fmt": "npm run format",
-    "fmt:check": "npm run lint"
+    "fmt:check": "npm run lint",
+    "build:wasm": "cd wasm-core && wasm-pack build --target web --out-dir ../src/lib/wasm"
   },
   "dependencies": {
     "dompurify": "^3.3.1",
