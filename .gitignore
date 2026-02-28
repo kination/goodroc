@@ -28,3 +28,7 @@ vite.config.ts.timestamp-*
 /.internal-doc
 /.vscode
 /src/dummy-docs
+
+
+# wasm
+/wasm-core/target
