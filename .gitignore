@@ -23,6 +23,8 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 /dist
+/.claude
+/.agent
 /.internal-doc
 /.vscode
 /src/dummy-docs
