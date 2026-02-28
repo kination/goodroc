@@ -3,11 +3,11 @@
 </script>
 
 <svelte:head>
-  <title>Drive Wiki Home</title>
+  <title>goodroc Home</title>
 </svelte:head>
 
 <div class="flex h-full flex-col items-center justify-center pt-16 text-center">
-  <h1 class="mb-4 text-3xl font-bold tracking-tight">Welcome to SvelteKit Drive Wiki</h1>
+  <h1 class="mb-4 text-3xl font-bold tracking-tight">Welcome to SvelteKit goodroc</h1>
   <p class="mb-8 max-w-lg text-lg text-muted-foreground">
     Select a document from the sidebar to view it. Changes will automatically sync with Google Drive
     using our Gemini Gems integration.

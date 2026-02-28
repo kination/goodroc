@@ -25,7 +25,7 @@
   <aside class="hidden w-64 flex-col border-r border-border bg-card md:flex">
     <div class="flex items-center gap-2 border-b border-border p-4 text-lg font-bold">
       <Folder class="h-5 w-5 text-primary" />
-      Drive Wiki
+      goodroc
     </div>
     <div class="flex-1 space-y-2 overflow-y-auto p-4">
       <div class="mb-4 text-xs font-semibold tracking-wider text-muted-foreground uppercase">

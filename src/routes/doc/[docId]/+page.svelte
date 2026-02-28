@@ -15,7 +15,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.docId} - Drive Wiki</title>
+  <title>{data.docId} - goodroc</title>
 </svelte:head>
 
 <div class="animate-in duration-300 fade-in slide-in-from-bottom-2">

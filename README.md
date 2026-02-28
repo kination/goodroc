@@ -1,6 +1,6 @@
-# Drive-as-Wiki
+# goodroc
 
-Drive-as-Wiki is a modern, high-performance Markdown wiki system that utilizes **Google Drive** as its Single Source of Truth (SSOT). It allows teams to manage technical documentation natively in Drive while providing a sleek, lightning-fast web interface. The project is designed for real-time synchronization with **Gemini**, enabling AI-powered insights from the latest wiki content.
+goodroc is a modern, high-performance Markdown wiki system that utilizes **Google Drive** as its Single Source of Truth (SSOT). It allows teams to manage technical documentation natively in Drive while providing a sleek, lightning-fast web interface. The project is designed for real-time synchronization with **Gemini**, enabling AI-powered insights from the latest wiki content.
 
 ## Tech Stack
 
