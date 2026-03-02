@@ -17,7 +17,7 @@
       });
       const userData = await response.json();
 
-      authStore.login(rootFolderId);
+      authStore.login(rootFolderId, accessToken);
       // Update with real data
       authStore.user = {
         name: userData.name,
@@ -32,10 +32,11 @@
     }
   }
 
-  onMount(() => {
-    // google 객체가 로드될 때까지 기다리거나 체크가 필요할 수 있음
+  function initGoogleClient(): boolean {
     const google = (window as any).google;
-    if (typeof google !== 'undefined') {
+    if (typeof google === 'undefined') return false;
+
+    if (!tokenClient) {
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         scope:
@@ -43,29 +44,43 @@
         callback: (tokenResponse: any) => {
           if (tokenResponse && tokenResponse.access_token) {
             handleAuthSuccess(tokenResponse.access_token);
+          } else {
+            isLoggingIn = false; // Reset if user closed the popup
           }
+        },
+        error_callback: (error: any) => {
+          console.error('Google OAuth Error:', error);
+          isLoggingIn = false;
         }
       });
-    } else if (import.meta.env.DEV) {
-      console.log(
-        '[Development] Google Identity Services (GSI) not loaded. Falling back to mock login.'
-      );
     }
+    return true;
+  }
+
+  onMount(() => {
+    // Attempt early initialization
+    initGoogleClient();
   });
 
   function handleGoogleLogin() {
     isLoggingIn = true;
-    if (tokenClient) {
+
+    // Attempt initialization again in case script loaded late
+    const isGoogleReady = initGoogleClient();
+
+    if (isGoogleReady && tokenClient) {
       tokenClient.requestAccessToken();
     } else if (import.meta.env.DEV) {
-      console.warn('[Development] Mocking Google Login for testing.');
+      console.warn('[Development] Mocking Google Login because window.google is not available.');
       setTimeout(() => {
-        authStore.login(rootFolderId);
+        authStore.login(rootFolderId, 'mock-token-for-dev');
         isLoggingIn = false;
         isOpen = false;
       }, 1000);
     } else {
-      console.error('Google token client is not initialized.');
+      console.error(
+        'Google token client is not initialized. Please check network or script block blockers.'
+      );
       isLoggingIn = false;
     }
   }
