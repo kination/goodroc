@@ -6,25 +6,69 @@
   let { isOpen = $bindable(false) } = $props<{ isOpen: boolean }>();
 
   let isLoggingIn = $state(false);
+  let rootFolderId = $state('');
+  let tokenClient: any;
 
-  function handleGoogleLogin() {
-    isLoggingIn = true;
+  async function handleAuthSuccess(accessToken: string) {
+    try {
+      // Get user info from Google API
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      const userData = await response.json();
 
-    // TODO: Replace with actual Google OAuth integration (Google Identity Services)
-    setTimeout(() => {
-      authStore.login();
-      isLoggingIn = false;
+      authStore.login(rootFolderId);
+      // Update with real data
+      authStore.user = {
+        name: userData.name,
+        email: userData.email
+      };
+
       isOpen = false;
-    }, 1500);
+    } catch (error) {
+      console.error('Failed to fetch user info:', error);
+    } finally {
+      isLoggingIn = false;
+    }
   }
 
   onMount(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) isOpen = false;
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    // google 객체가 로드될 때까지 기다리거나 체크가 필요할 수 있음
+    const google = (window as any).google;
+    if (typeof google !== 'undefined') {
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        scope:
+          'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+        callback: (tokenResponse: any) => {
+          if (tokenResponse && tokenResponse.access_token) {
+            handleAuthSuccess(tokenResponse.access_token);
+          }
+        }
+      });
+    } else if (import.meta.env.DEV) {
+      console.log(
+        '[Development] Google Identity Services (GSI) not loaded. Falling back to mock login.'
+      );
+    }
   });
+
+  function handleGoogleLogin() {
+    isLoggingIn = true;
+    if (tokenClient) {
+      tokenClient.requestAccessToken();
+    } else if (import.meta.env.DEV) {
+      console.warn('[Development] Mocking Google Login for testing.');
+      setTimeout(() => {
+        authStore.login(rootFolderId);
+        isLoggingIn = false;
+        isOpen = false;
+      }, 1000);
+    } else {
+      console.error('Google token client is not initialized.');
+      isLoggingIn = false;
+    }
+  }
 </script>
 
 {#if isOpen}
@@ -50,6 +94,24 @@
             Authenticate to sync your Google Drive markdown documents and use Gemini.
           </p>
         </div>
+
+        <div class="mt-2 w-full text-left">
+          <label for="root-folder" class="mb-1 block text-sm font-medium text-foreground">
+            Team Directory/Folder ID (Optional)
+          </label>
+          <input
+            id="root-folder"
+            type="text"
+            bind:value={rootFolderId}
+            placeholder="e.g. 1A2b3C4d5E6f_TeamDriveId"
+            class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
+          />
+          <p class="mt-1 text-xs text-muted-foreground">
+            Leave blank to connect your entire root drive, or specify a folder ID to use it as the
+            workspace root.
+          </p>
+        </div>
+
         <button
           onclick={handleGoogleLogin}
           disabled={isLoggingIn}

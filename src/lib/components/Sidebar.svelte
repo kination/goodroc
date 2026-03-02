@@ -1,6 +1,15 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { Folder, FileText, LogOut, LogIn, User } from 'lucide-svelte';
+  import {
+    Folder,
+    FolderOpen,
+    FileText,
+    LogOut,
+    LogIn,
+    User,
+    ChevronRight,
+    ChevronDown
+  } from 'lucide-svelte';
   import { authStore } from '$lib/auth.svelte';
 
   let { loginModalOpen = $bindable(false) } = $props<{ loginModalOpen: boolean }>();
@@ -11,41 +20,78 @@
     <Folder class="h-5 w-5 text-primary" />
     goodroc
   </div>
-  <div class="flex-1 space-y-2 overflow-y-auto p-4">
-    <div class="mb-4 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-      Wiki Root
+  <div class="flex-1 space-y-1 overflow-y-auto p-3">
+    <div
+      class="mb-2 flex items-center justify-between px-2 text-xs font-semibold tracking-wider text-muted-foreground"
+    >
+      <span class="uppercase">Wiki Root</span>
+      {#if authStore.rootFolderId}
+        <span
+          class="ml-1 max-w-[100px] truncate rounded-sm bg-primary/10 px-1.5 py-0.5 text-[10px] text-primary/70"
+          title={authStore.rootFolderId}>{authStore.rootFolderId}</span
+        >
+      {/if}
     </div>
 
-    <a
-      href="/doc/getting-started"
-      class="flex cursor-pointer items-center gap-2 rounded p-2 text-sm transition-colors hover:bg-muted {page
-        .url.pathname === '/doc/getting-started'
-        ? 'bg-secondary font-semibold text-primary'
-        : ''}"
-    >
-      <FileText class="h-4 w-4 text-muted-foreground" />
-      getting-started.md
-    </a>
-    <a
-      href="/doc/architecture"
-      class="flex cursor-pointer items-center gap-2 rounded p-2 text-sm transition-colors hover:bg-muted {page
-        .url.pathname === '/doc/architecture'
-        ? 'bg-secondary font-semibold text-primary'
-        : ''}"
-    >
-      <FileText class="h-4 w-4 text-muted-foreground" />
-      architecture.md
-    </a>
-    <a
-      href="/doc/api-guide"
-      class="flex cursor-pointer items-center gap-2 rounded p-2 text-sm transition-colors hover:bg-muted {page
-        .url.pathname === '/doc/api-guide'
-        ? 'bg-secondary font-semibold text-primary'
-        : ''}"
-    >
-      <FileText class="h-4 w-4 text-muted-foreground" />
-      api-guide.md
-    </a>
+    <!-- Tree Root -->
+    <div class="space-y-0.5 font-sans text-sm">
+      <div
+        class="group flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1.5 font-medium text-foreground transition-colors hover:bg-muted"
+      >
+        <ChevronDown class="h-4 w-4 shrink-0 text-muted-foreground/70" />
+        <FolderOpen class="h-4 w-4 shrink-0 text-primary/80" />
+        <span class="truncate select-none"
+          >{import.meta.env.VITE_GOOGLE_DRIVE_ROOT_FOLDER_NAME || 'Wiki Root'}</span
+        >
+      </div>
+
+      <!-- Nested Content -->
+      <div class="relative ml-4 space-y-0.5 border-l border-border pl-2">
+        <a
+          href="/doc/getting-started"
+          class="group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted {page
+            .url.pathname === '/doc/getting-started'
+            ? 'bg-secondary font-semibold text-primary'
+            : 'text-muted-foreground'}"
+        >
+          <FileText class="h-4 w-4 shrink-0" />
+          <span class="truncate">getting-started.md</span>
+        </a>
+
+        <!-- Nested Folder -->
+        <div
+          class="group mt-1 flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1.5 font-medium text-foreground transition-colors hover:bg-muted"
+        >
+          <ChevronDown class="h-4 w-4 shrink-0 text-muted-foreground/70" />
+          <FolderOpen class="h-4 w-4 shrink-0 text-primary/80" />
+          <span class="truncate select-none">api</span>
+        </div>
+
+        <!-- Double Nested Content -->
+        <div class="relative ml-4 space-y-0.5 border-l border-border pl-2">
+          <a
+            href="/doc/architecture"
+            class="group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted {page
+              .url.pathname === '/doc/architecture'
+              ? 'bg-secondary font-semibold text-primary'
+              : 'text-muted-foreground'}"
+          >
+            <FileText class="h-4 w-4 shrink-0" />
+            <span class="truncate">architecture.md</span>
+          </a>
+          <a
+            href="/doc/api-guide"
+            class="group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-muted {page
+              .url.pathname === '/doc/api-guide'
+              ? 'bg-secondary font-semibold text-primary'
+              : 'text-muted-foreground'}"
+          >
+            <FileText class="h-4 w-4 shrink-0" />
+            <span class="truncate">api-guide.md</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="border-t border-border p-4">
     {#if authStore.user}
