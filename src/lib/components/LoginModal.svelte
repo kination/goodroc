@@ -70,13 +70,6 @@
 
     if (isGoogleReady && tokenClient) {
       tokenClient.requestAccessToken();
-    } else if (import.meta.env.DEV) {
-      console.warn('[Development] Mocking Google Login because window.google is not available.');
-      setTimeout(() => {
-        authStore.login(rootFolderId, 'mock-token-for-dev');
-        isLoggingIn = false;
-        isOpen = false;
-      }, 1000);
     } else {
       console.error(
         'Google token client is not initialized. Please check network or script block blockers.'
