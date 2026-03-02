@@ -9,9 +9,8 @@ export interface DriveFile {
  * Fetches all directories and markdown files inside a given Google Drive Folder ID.
  */
 export async function fetchDriveHierarchy(folderId: string, accessToken: string): Promise<DriveFile[]> {
-  // mimeType: Google Folder OR Markdown file
-  // Filter out trashed files
-  const query = `'${folderId}' in parents and trashed = false and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'text/markdown' or name contains '.md')`;
+  // Fetch all files unconditionally (except trashed)
+  const query = `'${folderId}' in parents and trashed = false`;
 
   const url = new URL('https://www.googleapis.com/drive/v3/files');
   url.searchParams.append('q', query);

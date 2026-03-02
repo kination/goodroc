@@ -40,7 +40,7 @@
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         scope:
-          'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+          'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
         callback: (tokenResponse: any) => {
           if (tokenResponse && tokenResponse.access_token) {
             handleAuthSuccess(tokenResponse.access_token);
