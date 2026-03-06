@@ -1,4 +1,4 @@
-name: E2E Tests
+name: Trigger E2E test
 on:
   push:
     branches: [ main, master ]
