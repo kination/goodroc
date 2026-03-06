@@ -32,3 +32,5 @@ vite.config.ts.timestamp-*
 
 # wasm
 /wasm-core/target
+/test-results/
+/playwright-report/
